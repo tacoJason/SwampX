@@ -1,18 +1,27 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar } from 'react-native';
-import { firebasePushData } from '../firebaseDB';
+import { firebasePushData, firebasePullData} from '../firebaseDB';
+
 
 function HomeScreen() {
-  const handleButtonClick = () => {
+  const handleButtonClick1 = () => {
     firebasePushData('test-longitude', 'test-latitude', 'test-imageLink');
     console.log('Data pushed to Firebase!');
+  };
+  const handleButtonClick2 = () => {
+    const array = firebasePullData();
+    console.log('Data pulled from Firebase!');
+    console.log(array);
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Home</Text>
-      <TouchableOpacity style={styles.button} onPress={handleButtonClick}>
+      <TouchableOpacity style={styles.button} onPress={handleButtonClick1}>
         <Text style={styles.buttonText}>Push Data to Firebase</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleButtonClick2}>
+        <Text style={styles.buttonText}>Pull Data from Firebase</Text>
       </TouchableOpacity>
     </View>
   );
