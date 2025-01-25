@@ -1,0 +1,17 @@
+
+import { StyleSheet, Text, View, StatusBar } from 'react-native';
+
+
+
+function HomeScreen() {
+    return (
+      <View style={styles.container}>
+        <Text>Home</Text>
+      </View>
+    );
+  }
+  
+  
+  export default HomeScreen;
+  
+

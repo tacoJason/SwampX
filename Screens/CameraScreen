@@ -1,0 +1,14 @@
+
+
+
+
+function CameraScreen() {
+  return (
+    <View style={styles.container}>
+      <Text>Camera</Text>
+    </View>
+  );
+}
+
+
+export default CameraScreen;
