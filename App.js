@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from './Screens/HomeScreen.js';
 import CameraScreen from './Screens/CameraScreen.js';
 import MapScreen from './Screens/MapScreen.js';
+import TestScreen from './Screens/TestScreen.js';
 
 const Tab = createBottomTabNavigator();
 
@@ -15,6 +16,7 @@ export default function App() {
           <Tab.Screen name="Home" component={HomeScreen} />
           <Tab.Screen name="Map" component={MapScreen} />
           <Tab.Screen name="Settings" component={CameraScreen} />
+          <Tab.Screen name="Test" component={TestScreen} />
         </Tab.Navigator>
       </NavigationContainer>
     );

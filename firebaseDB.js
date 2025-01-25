@@ -40,20 +40,26 @@ export const firebasePushData = (latitude, longitude, imageLink) => {
 };
 
 
-export const firebasePullData = async()=>{
-  try{
+export const firebasePullData = async () => {
+  try {
     const db = getDatabase(app);
     const imagesRef = ref(db, 'images'); // Images 
 
     const snapshot = await get(imagesRef);
     if (snapshot.exists()) {
       const imageList = snapshot.val();
-      return imageList;
+      // Convert the object to an array
+      const imageArray = Object.keys(imageList).map(key => ({
+        id: key,
+        ...imageList[key]
+      }));
+      return imageArray;
     }
+    return []; // Return an empty array if no data exists
   } catch (error) {
     console.error('Error pulling from database: ', error);
+    return []; // Return an empty array in case of error
   }
-  
 }
 
 export const iterateData = (imageList) =>{
