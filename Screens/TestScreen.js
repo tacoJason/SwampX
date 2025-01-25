@@ -6,11 +6,12 @@ export default function App() {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const [endReached, setEndReached] = useState(false);
   const itemsPerPage = 5;
 
   // Function to fetch data from the database
   const fetchMoreData = () => {
-    if (isLoading) return;
+    if (isLoading || endReached) return;
 
     setIsLoading(true);
 
@@ -25,8 +26,13 @@ export default function App() {
       const endIndex = startIndex + itemsPerPage;
       const newItems = entries.slice(startIndex, endIndex);
 
-      setData((prevData) => [...prevData, ...newItems]);
-      setPage((prevPage) => prevPage + 1);
+      if (newItems.length === 0) {
+        setEndReached(true);
+      } else {
+        setData((prevData) => [...prevData, ...newItems]);
+        setPage((prevPage) => prevPage + 1);
+      }
+
       setIsLoading(false);
     }).catch((error) => {
       console.error(error);
@@ -39,8 +45,13 @@ export default function App() {
   }, []);
 
   const renderFooter = () => {
-    if (!isLoading) return null;
-    return <ActivityIndicator size="large" color="#0000ff" style={styles.loading} />;
+    if (isLoading) {
+      return <ActivityIndicator size="large" color="#0000ff" style={styles.loading} />;
+    }
+    if (endReached) {
+      return <Text style={styles.endMessage}>No more data to load</Text>;
+    }
+    return null;
   };
 
   return (
@@ -78,5 +89,11 @@ const styles = StyleSheet.create({
   },
   loading: {
     marginVertical: 20,
+  },
+  endMessage: {
+    textAlign: 'center',
+    padding: 10,
+    fontSize: 16,
+    color: 'gray',
   },
 });
