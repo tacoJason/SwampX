@@ -1,10 +1,11 @@
 
+import { StyleSheet, Text, View, StatusBar } from 'react-native';
 
 
 
 function CameraScreen() {
   return (
-    <View style={styles.container}>
+    <View>
       <Text>Camera</Text>
     </View>
   );

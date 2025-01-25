@@ -1,17 +1,16 @@
-
 import { StyleSheet, Text, View, StatusBar } from 'react-native';
 
 
 
-function HomeScreen() {
+function MapScreen() {
     return (
-      <View style={styles.container}>
+      <View >
         <Text>Home</Text>
       </View>
     );
   }
   
   
-  export default HomeScreen;
+  export default MapScreen;
   
 
