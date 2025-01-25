@@ -4,10 +4,12 @@ import { firebasePushData, firebasePullData, iterateData, getLocations} from '..
 
 
 function HomeScreen() {
+  //test push data
   const handleButtonClick1 = () => {
     firebasePushData('test-latitude', 'test-longitude', 'test-imageLink');
     console.log('Data pushed to Firebase!');
   };
+  //test pull data
   const handleButtonClick2 = async() => {
     const array = await firebasePullData();
     console.log('Data pulled from Firebase!');
@@ -15,6 +17,8 @@ function HomeScreen() {
     console.log(array[0]);
     
   };
+
+  //test iterating through array
   const handleButtonClick3 = async() => {
     const array = await firebasePullData();
     iterateData(array);
@@ -22,6 +26,7 @@ function HomeScreen() {
     
   };
 
+  //test locations function
   const handleButtonClick4 = async() => {
     const array = await firebasePullData();
     const locations = getLocations(array);

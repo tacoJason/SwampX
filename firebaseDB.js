@@ -22,6 +22,7 @@ const app = initializeApp(firebaseConfig);
 console.log('Firebase App Initialized:', app.name);
 
 
+//pushes an image to the database with location, link, and time attributes
 export const firebasePushData = (latitude, longitude, imageLink) => {
   try {
     const db = getDatabase(app); 
@@ -39,7 +40,7 @@ export const firebasePushData = (latitude, longitude, imageLink) => {
   }
 };
 
-
+//pulls data from the firebase realtime database
 export const firebasePullData = async () => {
   try {
     const db = getDatabase(app);
@@ -53,7 +54,7 @@ export const firebasePullData = async () => {
         id: key,
         ...imageList[key]
       }));
-      return imageArray;
+      return imageArray.reverse();
     }
     return []; // Return an empty array if no data exists
   } catch (error) {
@@ -65,8 +66,8 @@ export const firebasePullData = async () => {
 export const iterateData = (imageList) =>{
   try{
     Object.keys(imageList).forEach((image) => {
-          const {imageLink, latitude, longitude, time} = imageList[image];
-          console.log(`ImageID ${image}:`, imageList);
+          const {imageLink, latitude, longitude, time} = imageList[image]; //extracts values of each attribute for the image
+          console.log(`ImageID ${image}`); //printing each attribute to console
           console.log('imageLink', imageLink);
           console.log("lat", latitude);
           console.log("long", longitude);
@@ -81,11 +82,11 @@ export const iterateData = (imageList) =>{
 export const getLocations = (imageList) =>{
   
   try{
-    locations = [];
+    const locations = [];
     Object.keys(imageList).forEach((image) => {
-          const {imageLink, latitude, longitude, time} = imageList[image];
-          const coords = [latitude, longitude];
-          locations.push({imageLink: coords});
+          const {imageLink, latitude, longitude} = imageList[image];
+          const coords = [latitude, longitude]; //Create structure for coordinates
+          locations.push({Coords: coords, imageLink: imageLink}); //push coordinates with the image link to the list as a dict
       });
     return locations;
   } catch (error) {
