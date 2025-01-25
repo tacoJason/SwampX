@@ -7,9 +7,9 @@ import {
   Dimensions,
   Image,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import * as Location from "expo-location";
-import MapView, { Marker } from "react-native-maps";
+//import { useNavigation } from "@react-navigation/native";
+//import * as Location from "expo-location";
+//import MapView, { Marker } from "react-native-maps";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
