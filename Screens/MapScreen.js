@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  Text,
-  Dimensions,
-  Image,
-} from "react-native";
-//import { useNavigation } from "@react-navigation/native";
-//import * as Location from "expo-location";
-//import MapView, { Marker } from "react-native-maps";
+import { StyleSheet, View, Text, Dimensions, Image } from "react-native";
+import MapView, { Marker } from "react-native-maps";
+import * as Location from "expo-location";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-const Waiting_Driver_Screen = () => {
+const MapScreen = () => {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [initialRegion, setInitialRegion] = useState(null);
+  const [markerClicked, setMarkerClicked] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState(null);
+
+  // List of locations with title and imageLink
+  const locations = [
+    { latitude: 29.648095, longitude: -82.3435861, title: "Location 1", imageLink: 'https://i.imgur.com/rFBiyeR.jpeg' },
+    { latitude: 29.648008346557617, longitude: -82.35013580322266, title: "Gator Corner Dining", imageLink: 'https://i.imgur.com/tL80jRS.jpeg'},
+    { latitude: 29.649403, longitude: -82.3455544, title: "Location 3", imageLink: 'https://i.imgur.com/mvDat9q.jpeg'},
+  ];
 
   useEffect(() => {
     const getLocation = async () => {
@@ -40,10 +41,22 @@ const Waiting_Driver_Screen = () => {
     getLocation();
   }, []);
 
+  // Update this to store the full location object
+  const handleMarkerPress = (location) => {
+    setMarkerClicked(true);
+    setSelectedLocation(location);  // Set the full location object (including imageLink)
+  };
+
+  const handleMapPress = () => {
+    if (markerClicked) {
+      setMarkerClicked(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
       {initialRegion && (
-        <MapView style={styles.map} initialRegion={initialRegion}>
+        <MapView style={styles.map} initialRegion={initialRegion} onPress={handleMapPress}>
           {currentLocation && (
             <Marker
               coordinate={{
@@ -51,11 +64,37 @@ const Waiting_Driver_Screen = () => {
                 longitude: currentLocation.longitude,
               }}
               title="Your Location"
+              onPress={() => handleMarkerPress({ title: "Your Location", imageLink: "https://i.imgur.com/lJJZVRv.jpeg" })}
             />
           )}
+
+          {/* Loop through the locations array and add markers */}
+          {locations.map((loc, index) => (
+            <Marker
+              key={index}
+              coordinate={{
+                latitude: loc.latitude,
+                longitude: loc.longitude,
+              }}
+              title={loc.title}
+              onPress={() => handleMarkerPress(loc)}  // Pass the whole location object
+            />
+          ))}
         </MapView>
       )}
-      {/* Rest of your code */}
+
+      {/* Conditionally render text and image when the marker is clicked */}
+      {markerClicked && selectedLocation && (
+        <View style={styles.textContainer}>
+          <Text style={styles.text}>{`You clicked: ${selectedLocation.title}`}</Text>
+          <Text style={styles.text}>You clicked the marker!</Text>
+          <Image
+            source={{ uri: selectedLocation.imageLink }}  // Use the imageLink of the selected location
+            style={styles.image}
+            resizeMode="contain"
+          />
+        </View>
+      )}
     </View>
   );
 };
@@ -70,6 +109,24 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
+  textContainer: {
+    position: "absolute",
+    bottom: 30,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    padding: 10,
+    borderRadius: 5,
+    width: "80%",
+    alignItems: "center",
+  },
+  text: {
+    color: "white",
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  image: {
+    height: 450,
+    width: "100%",
+  },
 });
 
-export default Waiting_Driver_Screen;
+export default MapScreen;
