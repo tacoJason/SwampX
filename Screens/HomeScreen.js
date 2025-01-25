@@ -6,7 +6,7 @@ import { StyleSheet, Text, View, StatusBar } from 'react-native';
 function HomeScreen() {
     return (
       <View >
-        <Text>Home</Text>
+        <Text>Test</Text>
       </View>
     );
   }
