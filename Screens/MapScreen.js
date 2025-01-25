@@ -12,11 +12,10 @@ const MapScreen = () => {
   const [markerClicked, setMarkerClicked] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
 
-  // List of locations with title and imageLink
   const locations = [
-    { latitude: 29.648095, longitude: -82.3435861, title: "Location 1", imageLink: 'https://i.imgur.com/rFBiyeR.jpeg' },
-    { latitude: 29.648008346557617, longitude: -82.35013580322266, title: "Gator Corner Dining", imageLink: 'https://i.imgur.com/tL80jRS.jpeg'},
-    { latitude: 29.649403, longitude: -82.3455544, title: "Location 3", imageLink: 'https://i.imgur.com/mvDat9q.jpeg'},
+    { latitude: 29.648095, longitude: -82.3435861, imageLink: 'https://i.imgur.com/rFBiyeR.jpeg' },
+    { latitude: 29.648008346557617, longitude: -82.35013580322266, imageLink: 'https://i.imgur.com/tL80jRS.jpeg'},
+    { latitude: 29.649403, longitude: -82.3455544, imageLink: 'https://i.imgur.com/mvDat9q.jpeg'},
   ];
 
   useEffect(() => {
