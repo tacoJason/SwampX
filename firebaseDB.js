@@ -24,9 +24,9 @@ console.log('Firebase App Initialized:', app.name);
 
 export const firebasePushData = (longitude, latitude, imageLink) => {
   try {
-    const db = getDatabase(app);
-    const ref = push(ref(db, '/images'));
-    set(ref, {
+    const db = getDatabase(app); 
+    const locationRef = push(ref(db, '/images')); // Images 
+    set(locationRef, {
       longitude: longitude,
       latitude: latitude,
       imageLink: imageLink,
@@ -36,4 +36,4 @@ export const firebasePushData = (longitude, latitude, imageLink) => {
   } catch (error) {
     console.error('Error pushing data to Firebase:', error);
   }
-}
+};
