@@ -1,19 +1,36 @@
 import { StyleSheet, Text, View, StatusBar, Button, TouchableOpacity } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions, Camera} from 'expo-camera';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
-import imgurClientID from '../APIKeys.js';
-
-
-
+import APIKeys from '../APIKeys.js';
+import * as Location from 'expo-location';
+import { firebasePushData } from '../firebaseDB.js';
 
 function CameraScreen() {
+  //camera state
   const [facing, setFacing] = useState('back');
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef(null)
+
+  //page state
   const isFocused = useIsFocused();
 
+  //location states
+  const [location, setLocation] = useState(null);
+  const [locationPermission, setLocationPermission] = useState(null);
+
+
+  async function useLocationPermissions(){
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    setLocationPermission(status);
+    console.log(status);
+    console.log(locationPermission);
+  }
+
+  useEffect(() => {
+    useLocationPermissions();
+  }, []);
 
 
   //prevents rendering page and camera when not focused
@@ -26,12 +43,12 @@ function CameraScreen() {
     return <View />;
   }
 
-  if (!permission.granted) {
+  if (!permission.granted || locationPermission !== 'granted') {
     // Camera permissions are not granted yet.
     return (
       <View style={styles.container}>
-        <Text style={styles.message}>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} title="grant permission" />
+        <Text style={styles.message}>We need your permissions to show the camera</Text>
+        <Button onPress={requestPermission} title="Grant Camera Permission" />
       </View>
     );
   }
@@ -41,6 +58,7 @@ function CameraScreen() {
   }
 
   async function takePicture() {
+    console.log("Took Picture");
     if (cameraRef.current) {
         const photo = await cameraRef.current.takePictureAsync();
         console.log('Photo captured:', photo);
@@ -61,26 +79,42 @@ function CameraScreen() {
         formData,
         {
           headers: {
-            Authorization: `Client-ID ${imgurClientID}`,
+            Authorization: `Client-ID ${APIKeys.imgurClientID}`,
             'Content-Type': 'multipart/form-data',
           },
         }
       );
-      console.log('Upload success!', response.data);
+      console.log('Client Limit:', response.headers['x-ratelimit-clientlimit']);
+      console.log('Client Remaining:', response.headers['x-ratelimit-clientremaining']);
+      console.log('User Limit:', response.headers['x-ratelimit-userlimit']);
+      console.log('User Remaining:', response.headers['x-ratelimit-userremaining']);
+
+      let location = await Location.getCurrentPositionAsync({});
+      const longitude = location.coords.longitude;
+      const latitude = location.coords.latitude;
+
+      console.log('Upload success!', response.data.data.link, latitude, longitude);
+      firebasePushData(latitude, longitude, response.data.data.link);
 
 
-      
     } catch (error) {
       if (error.response) {
+        console.log('Client Limit:', error.response.headers['x-ratelimit-clientlimit']);
+        console.log('Client Remaining:', error.response.headers['x-ratelimit-clientremaining']);
+        console.log('User Limit:', error.response.headers['x-ratelimit-userlimit']);
+        console.log('User Remaining:', error.response.headers['x-ratelimit-userremaining']);
+
         console.error('Error uploading image:', error.response.data);
         console.error('Status Code:', error.response.status);
-        console.error('Rate Limit Remaining:', error.response.headers['x-ratelimit-clientremaining']);
+        
       } else {
         console.error('Error uploading image:', error.message);
       }
     }
   }
   
+
+
 
   
 
