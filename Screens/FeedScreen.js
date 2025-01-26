@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, Text, View, StyleSheet, ActivityIndicator, Image } from 'react-native';
+import { FlatList, Text, View, StyleSheet, ActivityIndicator, Image, RefreshControl } from 'react-native';
 import { firebasePullData } from '../firebaseDB';
 
 export default function App() {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState(1);
   const [endReached, setEndReached] = useState(false);
   const itemsPerPage = 5;
 
-  // Function to fetch data from the database
+  // Load feed
   const fetchMoreData = () => {
     if (isLoading || endReached) return;
 
@@ -40,6 +41,29 @@ export default function App() {
     });
   };
 
+  // Refresh feed
+  const refreshData = () => {
+    setRefreshing(true);
+    setPage(1);
+    setEndReached(false);
+
+    firebasePullData().then((entries) => {
+      if (!Array.isArray(entries)) {
+        console.error('Data fetched is not an array');
+        setRefreshing(false);
+        return;
+      }
+
+      const newItems = entries.slice(0, itemsPerPage);
+      setData(newItems);
+      setPage(2);
+      setRefreshing(false);
+    }).catch((error) => {
+      console.error(error);
+      setRefreshing(false);
+    });
+  };
+
   useEffect(() => {
     fetchMoreData(); // Load initial data
   }, []);
@@ -49,7 +73,7 @@ export default function App() {
       return <ActivityIndicator size="large" color="#0000ff" style={styles.loading} />;
     }
     if (endReached) {
-      return <Text style={styles.endMessage}>No more data to load</Text>;
+      return <Text style={styles.endMessage}>🐈 No more cats to see... 🐈‍⬛</Text>;
     }
     return null;
   };
@@ -68,6 +92,12 @@ export default function App() {
         ListFooterComponent={renderFooter}
         onEndReached={fetchMoreData}
         onEndReachedThreshold={0.5}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={refreshData}
+          />
+        }
       />
     </View>
   );
@@ -82,10 +112,13 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+    alignItems: 'center', // Center the content horizontally
   },
   image: {
-    width: 100,
-    height: 100,
+    width: '60%', // Make the image take 60% of the container's width
+    height: 350, // Set a fixed height for the image to make it portrait
+    resizeMode: 'cover', // Cover the entire area of the image
+    borderRadius: 10, // Add some border radius for better appearance
   },
   loading: {
     marginVertical: 20,
