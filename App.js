@@ -14,10 +14,10 @@ export default function App() {
   return (
       <NavigationContainer>
         <Tab.Navigator>
-          <Tab.Screen name="Debug" component={HomeScreen} />
-          <Tab.Screen name="Map" component={MapScreen} />
-          <Tab.Screen name="Camera" component={CameraScreen} />
-          <Tab.Screen name="Feed" component={FeedScreen} />
+          <Tab.Screen name="Debug" component={HomeScreen} options={{ headerShown: false }}/>
+          <Tab.Screen name="Map" component={MapScreen} options={{ headerShown: false }}/>
+          <Tab.Screen name="Camera" component={CameraScreen} options={{ headerShown: false }}/>
+          <Tab.Screen name="Feed" component={FeedScreen} options={{ headerShown: false }}/>
         </Tab.Navigator>
       </NavigationContainer>
     );

@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: 'flex-end',
     alignItems: 'center',
+    marginTop: 65,
     margin: 25,
   },
   button2: {
