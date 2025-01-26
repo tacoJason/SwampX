@@ -75,7 +75,6 @@ const MapScreen = () => {
     };
 
     watchLocation();
-
   }, []);
 
   // Handle marker press to show details
@@ -97,10 +96,10 @@ const MapScreen = () => {
     }
   };
 
-  // Automatically update map region whenever locations array changes
+  // Fetch locations and set initial region when the locations state changes
   useEffect(() => {
     if (locations.length > 0 && currentLocation) {
-      const { latitude, longitude } = locations[0]; // Use the first location's coordinates (you can change this logic as needed)
+      const { latitude, longitude } = locations[0]; // Use the first location's coordinates
       setInitialRegion({
         latitude,
         longitude,
@@ -108,7 +107,7 @@ const MapScreen = () => {
         longitudeDelta: 0.005,
       });
     }
-  }, [locations]); // Dependency array to run this whenever the locations array changes
+  }, [locations, currentLocation]); // Run this effect whenever locations or currentLocation changes
 
   // Refresh function triggered by the image press
   const handleRefreshMap = async () => {
@@ -122,18 +121,19 @@ const MapScreen = () => {
       longitudeDelta: 0.005,
     });
 
-    // Fetch new locations if needed
-    const fetchLocations = async () => {
-      try {
-        const imageList = await firebasePullData();
-        const fetchedLocations = getLocations(imageList);
-        setLocations(fetchedLocations);
-      } catch (error) {
-        console.error("Error fetching locations: ", error);
-      }
-    };
+    // Fetch new locations
+    await fetchLocations();
+  };
 
-    fetchLocations(); // Re-fetch locations
+  // Fetch new locations from Firebase
+  const fetchLocations = async () => {
+    try {
+      const imageList = await firebasePullData();
+      const fetchedLocations = getLocations(imageList);
+      setLocations(fetchedLocations); // Update locations state
+    } catch (error) {
+      console.error("Error fetching locations: ", error);
+    }
   };
 
   return (
