@@ -7,7 +7,7 @@ import {
   Dimensions,
   Animated,
 } from 'react-native';
-import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react-native';
+import { X, Heart } from 'lucide-react-native';
 import { firebasePullData, getAllBuildings , addLike, getLikes} from '../firebaseDB';
 
 const { width, height } = Dimensions.get('window');
@@ -271,7 +271,7 @@ const SwipeScreen = () => {
             }}
             disabled={isTransitioning || currentIndex >= images.length - 1}
           >
-            <ArrowLeftIcon color="white" size={24} />
+            <X color="white" size={24} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => handleSwipe('right')}
@@ -283,7 +283,7 @@ const SwipeScreen = () => {
             }}
             disabled={isTransitioning || currentIndex >= images.length - 1}
           >
-            <ArrowRightIcon color="white" size={24} />
+            <Heart color="white" size={24} />
           </TouchableOpacity>
         </View>
       </View>
