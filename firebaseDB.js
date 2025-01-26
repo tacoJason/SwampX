@@ -92,3 +92,43 @@ export const getLocations = (imageList) =>{
     console.error('Error iterating: ', error);
   }
 }
+
+export const getBuilding = async(latitude, longitude)=>{
+  const reverseGeocodingUrl = `https://api.geoapify.com/v1/geocode/reverse?lat=${latitude}&lon=${longitude}&apiKey=${APIKeys.geoCodeApiID}`;
+  console.log("reverse geocoding", reverseGeocodingUrl);
+
+  // Fetch the reverse geocoding result
+  const response = await fetch(reverseGeocodingUrl);
+
+if (!response.ok) {
+  console.error("Reverse geocoding API call failed:", response.status);
+  return;
+}
+const featureCollection = await response.json();
+
+if (featureCollection.features.length === 0) {
+  console.log("The address is not found");
+  return;
+}
+
+//parses through the address and returns just the building name
+const foundAddress = featureCollection.features[0].properties.formatted;
+console.log("Address Found:", foundAddress.split(',')[0]);
+return foundAddress.split(',')[0]
+}
+
+
+export const getAllBuildings = async (locationList)=>{
+  try {
+    const buildingNames = await Promise.all(
+      locationList.map(async (image) => {
+        const buildingName = await getBuilding(image.latitude, image.longitude);
+        return buildingName; // Collect each building name
+      })
+    );
+    return buildingNames; // Return the array of building names
+  } catch (error) {
+    console.error("Error getting all buildings:", error);
+    return [];
+  }
+}
