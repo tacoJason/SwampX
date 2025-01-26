@@ -19,23 +19,11 @@ export default function App() {
   return (
     <NavigationContainer>
       <Tab.Navigator
+        initialRouteName="Feed"  // Set the initial route to Feed
         screenOptions={{
-          tabBarStyle: { backgroundColor: '#fff' }, // Optional: customize tab bar style
+          tabBarStyle: { backgroundColor: '#fff' },
         }}
       >
-        <Tab.Screen
-          name="Debug"
-          component={HomeScreen}
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <Image
-                source={CameraIcon}
-                style={{ width: size, height: size, tintColor: color }}
-              />
-            ),
-            headerShown: false
-          }}
-        />
         <Tab.Screen
           name="Map"
           component={MapScreen}
@@ -43,6 +31,19 @@ export default function App() {
             tabBarIcon: ({ color, size }) => (
               <Image
                 source={MapIcon}
+                style={{ width: size, height: size, tintColor: color }}
+              />
+            ),
+            headerShown: false
+          }}
+        />
+        <Tab.Screen
+          name="Feed"
+          component={SwipeScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Image
+                source={FeedIcon}
                 style={{ width: size, height: size, tintColor: color }}
               />
             ),
@@ -62,20 +63,6 @@ export default function App() {
             headerShown: false
           }}
         />
-        <Tab.Screen
-          name="Feed"
-          component={FeedScreen}
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <Image
-                source={FeedIcon}
-                style={{ width: size, height: size, tintColor: color }}
-              />
-            ),
-            headerShown: false
-          }}
-        />
-        <Tab.Screen name="Swipe" component={SwipeScreen} options = {{headerShown: false}}/>
       </Tab.Navigator>
     </NavigationContainer>
   );
