@@ -3,8 +3,6 @@ import { StyleSheet, View, Text, Dimensions, Image, TouchableOpacity } from "rea
 import MapView, { Marker, Circle } from "react-native-maps";
 import * as Location from "expo-location";
 import { getLocations, firebasePullData } from "../firebaseDB.js";
-
-// Import the image
 import swapImage from '../assets/swap2.png';
 
 const windowWidth = Dimensions.get("window").width;
@@ -15,10 +13,9 @@ const MapScreen = () => {
   const [initialRegion, setInitialRegion] = useState(null);
   const [markerClicked, setMarkerClicked] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
-  const [locations, setLocations] = useState([]); // State to hold the fetched locations from Firebase
+  const [locations, setLocations] = useState([]);
 
   useEffect(() => {
-    // Request for location permission and get current location
     const getLocation = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
@@ -36,12 +33,11 @@ const MapScreen = () => {
       });
     };
 
-    // Fetch locations from Firebase and update state
     const fetchLocations = async () => {
       try {
-        const imageList = await firebasePullData(); // Get data from Firebase
-        const fetchedLocations = getLocations(imageList); // Process and map the data into a location array
-        setLocations(fetchedLocations); // Update state with fetched locations
+        const imageList = await firebasePullData();
+        const fetchedLocations = getLocations(imageList);
+        setLocations(fetchedLocations);
       } catch (error) {
         console.error("Error fetching locations: ", error);
       }
@@ -50,7 +46,6 @@ const MapScreen = () => {
     getLocation();
     fetchLocations();
 
-    // Automatic location watching (Optional)
     const watchLocation = async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") return;
@@ -67,8 +62,6 @@ const MapScreen = () => {
           });
         }
       );
-
-      // Clean up when component unmounts
       return () => {
         if (subscription) subscription.remove();
       };
@@ -77,7 +70,6 @@ const MapScreen = () => {
     watchLocation();
   }, []);
 
-  // Handle marker press to show details
   const handleMarkerPress = (location) => {
     if (location) {
       setMarkerClicked(true);
@@ -88,7 +80,6 @@ const MapScreen = () => {
     }
   };
 
-  // Handle map press to reset marker details
   const handleMapPress = () => {
     if (markerClicked) {
       setMarkerClicked(false);
@@ -122,12 +113,11 @@ const MapScreen = () => {
     await fetchLocations();
   };
 
-  // Fetch new locations from Firebase
   const fetchLocations = async () => {
     try {
       const imageList = await firebasePullData();
       const fetchedLocations = getLocations(imageList);
-      setLocations(fetchedLocations); // Update locations state
+      setLocations(fetchedLocations);
     } catch (error) {
       console.error("Error fetching locations: ", error);
     }
@@ -148,7 +138,6 @@ const MapScreen = () => {
             </Marker>
           )}
 
-          {/* Loop through the locations array and add markers */}
           {locations.map((loc, index) => (
             <Marker
               key={index}
@@ -156,7 +145,7 @@ const MapScreen = () => {
                 latitude: loc.latitude,
                 longitude: loc.longitude,
               }}
-              onPress={() => handleMarkerPress(loc)}  // Pass the whole location object
+              onPress={() => handleMarkerPress(loc)}  // pass the whole location object
             />
           ))}
           {locations.map((point, i) => (
@@ -164,18 +153,17 @@ const MapScreen = () => {
               key={i}
               center={{ latitude: point.latitude, longitude: point.longitude }}
               radius={50} // in meters, adjust to your liking
-              strokeColor="rgba(255,0,0,0.0)" // no stroke
-              fillColor="rgba(255, 0, 0, 0.2)" // translucent red
+              strokeColor="rgba(255,0,0,0.0)"
+              fillColor="rgba(255, 0, 0, 0.2)"
             />
           ))}
         </MapView>
       )}
 
-      {/* Conditionally render text and image when the marker is clicked */}
       {markerClicked && selectedLocation && (
         <View style={styles.textContainer}>
           <Image
-            source={{ uri: selectedLocation.imageLink }}  // Use the imageLink of the selected location
+            source={{ uri: selectedLocation.imageLink }} 
             style={styles.image}
             resizeMode="contain"
           />
@@ -221,27 +209,27 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: "#006ee6",  // Blue color for the circle
+    backgroundColor: "#006ee6",
     borderWidth: 2,
     borderColor: "white",
   },
   swapImage: {
-    width: 50,  // Set size of the image
-    height: 50, // Set size of the image
+    width: 50, 
+    height: 50,
   },
   refreshText: {
-    color: "white", // Text color
-    fontSize: 18, // Font size for the "Refresh" text
+    color: "white", 
+    fontSize: 18, 
   },
 
   imageBackground: {
     position: "absolute",
-    top: 50, // Adjust the distance from top
-    right: 20, // Position from the right
-    backgroundColor: "black", // Black background behind the image
-    padding: 10, // Add padding for spacing
-    borderRadius: 10, // Optional: rounded corners for the background box
-    zIndex: 1, // Ensure the image is above the map
+    top: 50, 
+    right: 20, 
+    backgroundColor: "black", 
+    padding: 10, 
+    borderRadius: 10, 
+    zIndex: 1,
   },
 });
 

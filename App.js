@@ -7,8 +7,6 @@ import CameraScreen from './Screens/CameraScreen.js';
 import MapScreen from './Screens/MapScreen.js';
 import FeedScreen from './Screens/FeedScreen.js';
 import SwipeScreen from './Screens/SwipeScreen.js';
-
-// Import PNG icons
 import CameraIcon from './assets/icons/camera-outline.png';
 import MapIcon from './assets/icons/map-outline.png';
 import FeedIcon from './assets/icons/cat.png';
@@ -19,7 +17,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Tab.Navigator
-        initialRouteName="Feed"  // Set the initial route to Feed
+        initialRouteName="Feed" 
         screenOptions={{
           tabBarStyle: { backgroundColor: '#fff' },
         }}

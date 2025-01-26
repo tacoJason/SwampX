@@ -1,10 +1,7 @@
 // Firebase Modules
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, push, set, get, child, onValue, runTransaction} from "firebase/database";
-import APIKeys from "./APIKeys.js"; // API Keys
-
-
-// Your web app's Firebase configuration
+import APIKeys from "./APIKeys.js"; 
 
 const firebaseConfig = {
 
@@ -17,7 +14,6 @@ const firebaseConfig = {
 
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 console.log('Firebase App Initialized:', app.name);
 
@@ -44,22 +40,22 @@ export const firebasePushData = (latitude, longitude, imageLink) => {
 export const firebasePullData = async () => {
   try {
     const db = getDatabase(app);
-    const imagesRef = ref(db, 'images'); // Images 
+    const imagesRef = ref(db, 'images');  
 
     const snapshot = await get(imagesRef);
     if (snapshot.exists()) {
       const imageList = snapshot.val();
-      // Convert the object to an array
+      // convert to an array
       const imageArray = Object.keys(imageList).map(key => ({
         id: key,
         ...imageList[key]
       }));
       return imageArray.reverse();
     }
-    return []; // Return an empty array if no data exists
+    return [];
   } catch (error) {
     console.error('Error pulling from database: ', error);
-    return []; // Return an empty array in case of error
+    return [];
   }
 }
 
@@ -81,7 +77,7 @@ export const getLikes = (imageList) =>{
 export const addLike = async (imageId) =>{
   try{
     const db = getDatabase(app); 
-    const refUpdate = ref(db, `/images/${imageId}/likes`); // Images 
+    const refUpdate = ref(db, `/images/${imageId}/likes`); 
     await runTransaction(refUpdate, (currentLikes) => {
       if (currentLikes === 0) {
         return 1;
@@ -129,14 +125,11 @@ export const getLocations = (imageList) =>{
 }
 
 export const getBuilding = async(latitude, longitude)=>{
-  // Check if latitude and longitude are valid numbers
   if (typeof latitude === 'number' && typeof longitude === 'number') {
-    // Check if latitude and longitude are within valid ranges
     if (latitude >= -90 && latitude <= 90 && longitude >= -180 && longitude <= 180){
   const reverseGeocodingUrl = `https://api.geoapify.com/v1/geocode/reverse?lat=${latitude}&lon=${longitude}&apiKey=${APIKeys.geoCodeApiID}`;
   console.log("reverse geocoding", reverseGeocodingUrl);
 
-  // Fetch the reverse geocoding result
   const response = await fetch(reverseGeocodingUrl);
 
 if (!response.ok) {
@@ -168,10 +161,10 @@ export const getAllBuildings = async (locationList)=>{
     const buildingNames = await Promise.all(
       locationList.map(async (image) => {
         const buildingName = await getBuilding(image.latitude, image.longitude);
-        return buildingName; // Collect each building name
+        return buildingName; // collect each building name
       })
     );
-    return buildingNames; // Return the array of building names
+    return buildingNames; // return the array of building names
   } catch (error) {
     console.error("Error getting all buildings:", error);
     return [];
