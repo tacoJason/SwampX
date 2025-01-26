@@ -66,7 +66,7 @@ export default function App() {
   };
 
   useEffect(() => {
-    fetchMoreData(); // Load initial data
+    fetchMoreData();
   }, []);
 
   //loads the building names and relates them to the initial data loaded
@@ -125,13 +125,13 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
-    alignItems: 'center', // Center the content horizontally
+    alignItems: 'center',
   },
   image: {
-    width: '60%', // Make the image take 60% of the container's width
-    height: 350, // Set a fixed height for the image to make it portrait
-    resizeMode: 'cover', // Cover the entire area of the image
-    borderRadius: 10, // Add some border radius for better appearance
+    width: '60%', 
+    height: 350, 
+    resizeMode: 'cover', 
+    borderRadius: 10, 
   },
   loading: {
     marginVertical: 20,
