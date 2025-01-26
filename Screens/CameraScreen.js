@@ -130,7 +130,7 @@ function CameraScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.button2} onPress={takePicture}>
-          <Text style={styles.text}>Take Picture</Text>
+            <Image source={require('../assets/buttonCam.png')} style={styles.cameraImage} />
           </TouchableOpacity>
         </View>
       </CameraView>
@@ -173,11 +173,16 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    margin: 50,
+    margin: 15,
   },
   swapImage: {
     width: 50, // Adjust to desired width
     height: 50, // Adjust to desired height
+    resizeMode: 'contain', // Ensures the image retains its aspect ratio
+  },
+  cameraImage: {
+    width: 100, // Adjust to desired width
+    height: 100, // Adjust to desired height
     resizeMode: 'contain', // Ensures the image retains its aspect ratio
   },
   text: {
