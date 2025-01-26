@@ -85,8 +85,7 @@ export const getLocations = (imageList) =>{
     const locations = [];
     Object.keys(imageList).forEach((image) => {
           const {imageLink, latitude, longitude} = imageList[image];
-          const coords = [latitude, longitude]; //Create structure for coordinates
-          locations.push({Coords: coords, imageLink: imageLink}); //push coordinates with the image link to the list as a dict
+          locations.push({latitude: latitude, longitude: longitude, imageLink: imageLink}); //push coordinates with the image link to the list as a dict
       });
     return locations;
   } catch (error) {
