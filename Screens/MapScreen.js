@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Text, Dimensions, Image, TouchableOpacity } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, Circle } from "react-native-maps";
 import * as Location from "expo-location";
 import { getLocations, firebasePullData } from "../firebaseDB.js";
 
@@ -161,6 +161,15 @@ const MapScreen = () => {
                 longitude: loc.longitude,
               }}
               onPress={() => handleMarkerPress(loc)}  // Pass the whole location object
+            />
+          ))}
+          {locations.map((point, i) => (
+            <Circle
+              key={i}
+              center={{ latitude: point.latitude, longitude: point.longitude }}
+              radius={50} // in meters, adjust to your liking
+              strokeColor="rgba(255,0,0,0.0)" // no stroke
+              fillColor="rgba(255, 0, 0, 0.2)" // translucent red
             />
           ))}
         </MapView>
