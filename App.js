@@ -31,7 +31,7 @@ export default function App() {
             tabBarIcon: ({ color, size }) => (
               <Image
                 source={MapIcon}
-                style={{ width: size, height: size, tintColor: color }}
+                style={{ width: size*.55, height: size*.80, tintColor: color }}
               />
             ),
             headerShown: false
@@ -44,7 +44,7 @@ export default function App() {
             tabBarIcon: ({ color, size }) => (
               <Image
                 source={FeedIcon}
-                style={{ width: size, height: size, tintColor: color }}
+                style={{ width: size*1.5, height: size, tintColor: color }}
               />
             ),
             headerShown: false
@@ -57,7 +57,7 @@ export default function App() {
             tabBarIcon: ({ color, size }) => (
               <Image
                 source={CameraIcon}
-                style={{ width: size, height: size, tintColor: color }}
+                style={{ width: size*1.65, height: size, tintColor: color }}
               />
             ),
             headerShown: false
