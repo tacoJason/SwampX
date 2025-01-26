@@ -1,3 +1,8 @@
+/*
+    This is the main feed screen of the app. It holds the animations and 
+    swipe functionality of the screen.
+*/
+
 import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
@@ -24,9 +29,9 @@ const SwipeScreen = () => {
   useEffect(() => {
     const loadImages = async () => {
       try {
-        const fetchedImages = await firebasePullData();
+        const fetchedImages = await firebasePullData(); // Fetch images from Firebase
         setImages(fetchedImages);
-      } catch (error) {
+      } catch (error) { // If error...
         console.error('Error fetching images:', error);
       }
     };
@@ -34,7 +39,7 @@ const SwipeScreen = () => {
   }, []);
 
   useEffect(() => {
-    const fetchBuildingNames = async() =>{
+    const fetchBuildingNames = async() =>{ // Fetch building names for each image
       if (images.length>1){
       const locations = images.map(item =>({latitude : item.latitude, longitude: item.longitude}));
       const buildings = await getAllBuildings(locations);
@@ -47,7 +52,7 @@ const SwipeScreen = () => {
   }, [images]);
 
   useEffect(() => {
-    const fetchLikeCounts = ()=>{
+    const fetchLikeCounts = ()=>{ // Grabs the number of likes on a photo
       if (images.length>0){
         const likes = getLikes(images);
         setLikeCounts(likes);
@@ -58,8 +63,8 @@ const SwipeScreen = () => {
   }, [images]);
 
 
-  const handleSwipe = (direction) => {
-    if (direction ==='right' && images[currentIndex]){
+  const handleSwipe = (direction) => { // direction = 'left' or 'right'
+    if (direction ==='right' && images[currentIndex]){ // if 'right' add like
       addLike(images[currentIndex].id);
     }
     if (isTransitioning || currentIndex >= images.length - 1) return;
@@ -68,7 +73,7 @@ const SwipeScreen = () => {
 
     // Animate the swipe (left or right)
     Animated.timing(swipeAnim, {
-      toValue: direction === 'left' ? -1 : 1,
+      toValue: direction === 'left' ? -1 : 1, // If left, -1; if right, 1
       duration: 300,
       useNativeDriver: true,
     }).start(() => {

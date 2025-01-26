@@ -1,3 +1,10 @@
+/*
+  This code is not used in the final version of the app.
+  You are free to use this code for debugging and testing purposes.
+  This code creates a feed that displays images from the database
+  in a flatlist that renders database entries in succession.
+*/
+
 import React, { useState, useEffect } from "react";
 import {
   FlatList,
