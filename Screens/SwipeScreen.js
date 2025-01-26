@@ -8,7 +8,7 @@ import {
   Animated,
 } from 'react-native';
 import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react-native';
-import { firebasePullData, getAllBuildings } from '../firebaseDB';
+import { firebasePullData, getAllBuildings , addLike, getLikes} from '../firebaseDB';
 
 const { width, height } = Dimensions.get('window');
 
@@ -19,6 +19,7 @@ const SwipeScreen = () => {
   const fadeInAnim = useRef(new Animated.Value(1)).current; // For new image fade-in
   const [isTransitioning, setIsTransitioning] = useState(false); // Prevent overlapping transitions
   const [buildingNames, setBuildingNames] = useState([]);
+  const [likeCounts, setLikeCounts] = useState([]);
 
   useEffect(() => {
     const loadImages = async () => {
@@ -45,8 +46,22 @@ const SwipeScreen = () => {
     }
   }, [images]);
 
+  useEffect(() => {
+    const fetchLikeCounts = ()=>{
+      if (images.length>0){
+        const likes = getLikes(images);
+        setLikeCounts(likes);
+      }
+    };
+    
+      fetchLikeCounts();
+  }, [images]);
+
 
   const handleSwipe = (direction) => {
+    if (direction ==='right' && images[currentIndex]){
+      addLike(images[currentIndex].id);
+    }
     if (isTransitioning || currentIndex >= images.length - 1) return;
 
     setIsTransitioning(true);
@@ -205,6 +220,30 @@ const SwipeScreen = () => {
           }}
         >
           {buildingNames[currentIndex]}
+
+        </Text>
+      </View>
+      {/* Bottom-right text */}
+      <View
+        style={{
+          position: 'absolute',
+          bottom: 10,
+          right: 10,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+          borderRadius: 8,
+          paddingHorizontal: 8,
+          paddingVertical: 4,
+        }}
+      >
+        <Text
+          style={{
+            color: '#fff',
+            fontSize: 16,
+            fontWeight: 'bold',
+          }}
+        >
+          ❤️
+          {likeCounts[currentIndex]}
         </Text>
       </View>
     </>

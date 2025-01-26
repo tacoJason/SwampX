@@ -1,6 +1,6 @@
 // Firebase Modules
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, push, set, get, child, onValue} from "firebase/database";
+import { getDatabase, ref, push, set, get, child, onValue, runTransaction} from "firebase/database";
 import APIKeys from "./APIKeys.js"; // API Keys
 
 
@@ -30,9 +30,9 @@ export const firebasePushData = (latitude, longitude, imageLink) => {
     set(locationRef, {
       latitude: latitude,
       longitude: longitude,
-    
       imageLink: imageLink,
       time: new Date().getTime(),
+      likes: 0
     });
     console.log('Data Pushed');
   } catch (error) {
@@ -61,6 +61,41 @@ export const firebasePullData = async () => {
     console.error('Error pulling from database: ', error);
     return []; // Return an empty array in case of error
   }
+}
+
+export const getLikes = (imageList) =>{
+  try{
+    const likesList = [];
+    Object.keys(imageList).forEach((image) =>{
+      const {likes} = imageList[image]; //extracts likes for each image
+      likesList.push(likes || 0);
+      console.log("likes", likes);
+    });
+    return likesList;
+  } catch (error){
+      console.error("error getting likes", error);
+      return [];
+  }
+}
+
+export const addLike = async (imageId) =>{
+  try{
+    const db = getDatabase(app); 
+    const refUpdate = ref(db, `/images/${imageId}/likes`); // Images 
+    await runTransaction(refUpdate, (currentLikes) => {
+      if (currentLikes === 0) {
+        return 1;
+      } else {
+         return currentLikes +1;
+       }
+      
+    });
+      console.log(`added like ${imageId}`);
+  } catch(error) {
+      console.error("Error adding like", error);
+    }
+  
+  
 }
 
 export const iterateData = (imageList) =>{
