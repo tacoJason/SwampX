@@ -8,7 +8,7 @@ import {
   Animated,
 } from 'react-native';
 import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react-native';
-import { firebasePullData } from '../firebaseDB';
+import { firebasePullData, getAllBuildings } from '../firebaseDB';
 
 const { width, height } = Dimensions.get('window');
 
@@ -18,6 +18,7 @@ const SwipeScreen = () => {
   const swipeAnim = useRef(new Animated.Value(0)).current; // For swipe animation
   const fadeInAnim = useRef(new Animated.Value(1)).current; // For new image fade-in
   const [isTransitioning, setIsTransitioning] = useState(false); // Prevent overlapping transitions
+  const [buildingNames, setBuildingNames] = useState([]);
 
   useEffect(() => {
     const loadImages = async () => {
@@ -30,6 +31,20 @@ const SwipeScreen = () => {
     };
     loadImages();
   }, []);
+
+  useEffect(() => {
+    const fetchBuildingNames = async() =>{
+      if (images.length>1){
+      const locations = images.map(item =>({latitude : item.latitude, longitude: item.longitude}));
+      const buildings = await getAllBuildings(locations);
+      setBuildingNames(buildings);
+      }
+    };
+    if (images.length>0){
+      fetchBuildingNames();
+    }
+  }, [images]);
+
 
   const handleSwipe = (direction) => {
     if (isTransitioning || currentIndex >= images.length - 1) return;
@@ -189,7 +204,7 @@ const SwipeScreen = () => {
             fontWeight: 'bold',
           }}
         >
-          Sample Text
+          {buildingNames[currentIndex]}
         </Text>
       </View>
     </>
