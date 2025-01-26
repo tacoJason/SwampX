@@ -1,38 +1,47 @@
-import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, StatusBar } from 'react-native';
-import { firebasePushData, firebasePullData, iterateData, getLocations, getAllBuildings} from '../firebaseDB';
+import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  StatusBar,
+} from "react-native";
+import {
+  firebasePushData,
+  firebasePullData,
+  iterateData,
+  getLocations,
+  getAllBuildings,
+} from "../firebaseDB";
 import APIKeys from "../APIKeys.js"; // API Keys
-
 
 function HomeScreen() {
   //test push data
   const handleButtonClick1 = () => {
-    firebasePushData('test-latitude', 'test-longitude', 'test-imageLink');
-    console.log('Data pushed to Firebase!');
+    firebasePushData("test-latitude", "test-longitude", "test-imageLink");
+    console.log("Data pushed to Firebase!");
   };
   //test pull data
-  const handleButtonClick2 = async() => {
+  const handleButtonClick2 = async () => {
     const array = await firebasePullData();
-    console.log('Data pulled from Firebase!');
+    console.log("Data pulled from Firebase!");
     console.log(array);
     console.log(array[0]);
-    
   };
 
   //test iterating through array
-  const handleButtonClick3 = async() => {
+  const handleButtonClick3 = async () => {
     const array = await firebasePullData();
     iterateData(array);
-    console.log('Data iterated!');
-    
+    console.log("Data iterated!");
   };
 
   //test locations function
-  const handleButtonClick4 = async() => {
+  const handleButtonClick4 = async () => {
     const array = await firebasePullData();
     const locations = getLocations(array);
-    console.log(locations); 
-  }
+    console.log(locations);
+  };
 
   return (
     <View style={styles.container}>
@@ -59,25 +68,25 @@ function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
   },
   button: {
-    backgroundColor: '#007bff',
+    backgroundColor: "#007bff",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
   },
   buttonText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 

@@ -1,6 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { FlatList, Text, View, StyleSheet, ActivityIndicator, Image, RefreshControl } from 'react-native';
-import { firebasePullData, getAllBuildings } from '../firebaseDB';
+import React, { useState, useEffect } from "react";
+import {
+  FlatList,
+  Text,
+  View,
+  StyleSheet,
+  ActivityIndicator,
+  Image,
+  RefreshControl,
+} from "react-native";
+import { firebasePullData, getAllBuildings } from "../firebaseDB";
 
 export default function App() {
   const [data, setData] = useState([]);
@@ -17,29 +25,31 @@ export default function App() {
 
     setIsLoading(true);
 
-    firebasePullData().then((entries) => {
-      if (!Array.isArray(entries)) {
-        console.error('Data fetched is not an array');
+    firebasePullData()
+      .then((entries) => {
+        if (!Array.isArray(entries)) {
+          console.error("Data fetched is not an array");
+          setIsLoading(false);
+          return;
+        }
+
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const newItems = entries.slice(startIndex, endIndex);
+
+        if (newItems.length === 0) {
+          setEndReached(true);
+        } else {
+          setData((prevData) => [...prevData, ...newItems]);
+          setPage((prevPage) => prevPage + 1);
+        }
+
         setIsLoading(false);
-        return;
-      }
-
-      const startIndex = (page - 1) * itemsPerPage;
-      const endIndex = startIndex + itemsPerPage;
-      const newItems = entries.slice(startIndex, endIndex);
-
-      if (newItems.length === 0) {
-        setEndReached(true);
-      } else {
-        setData((prevData) => [...prevData, ...newItems]);
-        setPage((prevPage) => prevPage + 1);
-      }
-
-      setIsLoading(false);
-    }).catch((error) => {
-      console.error(error);
-      setIsLoading(false);
-    });
+      })
+      .catch((error) => {
+        console.error(error);
+        setIsLoading(false);
+      });
   };
 
   // Refresh feed
@@ -48,21 +58,23 @@ export default function App() {
     setPage(1);
     setEndReached(false);
 
-    firebasePullData().then((entries) => {
-      if (!Array.isArray(entries)) {
-        console.error('Data fetched is not an array');
-        setRefreshing(false);
-        return;
-      }
+    firebasePullData()
+      .then((entries) => {
+        if (!Array.isArray(entries)) {
+          console.error("Data fetched is not an array");
+          setRefreshing(false);
+          return;
+        }
 
-      const newItems = entries.slice(0, itemsPerPage);
-      setData(newItems);
-      setPage(2);
-      setRefreshing(false);
-    }).catch((error) => {
-      console.error(error);
-      setRefreshing(false);
-    });
+        const newItems = entries.slice(0, itemsPerPage);
+        setData(newItems);
+        setPage(2);
+        setRefreshing(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setRefreshing(false);
+      });
   };
 
   useEffect(() => {
@@ -71,8 +83,11 @@ export default function App() {
 
   //loads the building names and relates them to the initial data loaded
   useEffect(() => {
-    const fetchBuildingNames = async() =>{
-      const locations = data.map(item =>({latitude : item.latitude, longitude: item.longitude}));
+    const fetchBuildingNames = async () => {
+      const locations = data.map((item) => ({
+        latitude: item.latitude,
+        longitude: item.longitude,
+      }));
       const buildings = await getAllBuildings(locations);
       setBuildingNames(buildings);
     };
@@ -82,10 +97,18 @@ export default function App() {
 
   const renderFooter = () => {
     if (isLoading) {
-      return <ActivityIndicator size="large" color="#0000ff" style={styles.loading} />;
+      return (
+        <ActivityIndicator
+          size="large"
+          color="#0000ff"
+          style={styles.loading}
+        />
+      );
     }
     if (endReached) {
-      return <Text style={styles.endMessage}>🐈 No more cats to see... 🐈‍⬛</Text>;
+      return (
+        <Text style={styles.endMessage}>🐈 No more cats to see... 🐈‍⬛</Text>
+      );
     }
     return null;
   };
@@ -106,10 +129,7 @@ export default function App() {
         onEndReached={fetchMoreData}
         onEndReachedThreshold={0.5}
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={refreshData}
-          />
+          <RefreshControl refreshing={refreshing} onRefresh={refreshData} />
         }
       />
     </View>
@@ -124,22 +144,22 @@ const styles = StyleSheet.create({
   item: {
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    alignItems: 'center',
+    borderBottomColor: "#ccc",
+    alignItems: "center",
   },
   image: {
-    width: '60%', 
-    height: 350, 
-    resizeMode: 'cover', 
-    borderRadius: 10, 
+    width: "60%",
+    height: 350,
+    resizeMode: "cover",
+    borderRadius: 10,
   },
   loading: {
     marginVertical: 20,
   },
   endMessage: {
-    textAlign: 'center',
+    textAlign: "center",
     padding: 10,
     fontSize: 16,
-    color: 'gray',
+    color: "gray",
   },
 });
