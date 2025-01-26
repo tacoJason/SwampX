@@ -32,6 +32,7 @@ export default function App() {
                 style={{ width: size, height: size, tintColor: color }}
               />
             ),
+            headerShown: false
           }}
         />
         <Tab.Screen
@@ -44,6 +45,7 @@ export default function App() {
                 style={{ width: size, height: size, tintColor: color }}
               />
             ),
+            headerShown: false
           }}
         />
         <Tab.Screen
@@ -56,6 +58,7 @@ export default function App() {
                 style={{ width: size, height: size, tintColor: color }}
               />
             ),
+            headerShown: false
           }}
         />
         <Tab.Screen
@@ -68,6 +71,7 @@ export default function App() {
                 style={{ width: size, height: size, tintColor: color }}
               />
             ),
+            headerShown: false
           }}
         />
       </Tab.Navigator>
