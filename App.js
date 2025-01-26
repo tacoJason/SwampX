@@ -6,6 +6,7 @@ import HomeScreen from './Screens/HomeScreen.js';
 import CameraScreen from './Screens/CameraScreen.js';
 import MapScreen from './Screens/MapScreen.js';
 import FeedScreen from './Screens/FeedScreen.js';
+import SwipeScreen from './Screens/SwipeScreen.js';
 
 // Import PNG icons
 import CameraIcon from './assets/icons/camera-outline.png';
@@ -74,6 +75,7 @@ export default function App() {
             headerShown: false
           }}
         />
+        <Tab.Screen name="Swipe" component={SwipeScreen} options = {{headerShown: false}}/>
       </Tab.Navigator>
     </NavigationContainer>
   );
