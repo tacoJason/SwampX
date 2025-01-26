@@ -96,10 +96,9 @@ const MapScreen = () => {
     }
   };
 
-  // Fetch locations and set initial region when the locations state changes
   useEffect(() => {
     if (locations.length > 0 && currentLocation) {
-      const { latitude, longitude } = locations[0]; // Use the first location's coordinates
+      const { latitude, longitude } = locations[0]; 
       setInitialRegion({
         latitude,
         longitude,
@@ -107,11 +106,9 @@ const MapScreen = () => {
         longitudeDelta: 0.005,
       });
     }
-  }, [locations, currentLocation]); // Run this effect whenever locations or currentLocation changes
+  }, [locations, currentLocation]); 
 
-  // Refresh function triggered by the image press
   const handleRefreshMap = async () => {
-    // Refresh the current location
     let location = await Location.getCurrentPositionAsync({});
     setCurrentLocation(location.coords);
     setInitialRegion({
@@ -185,12 +182,8 @@ const MapScreen = () => {
         </View>
       )}
 
-      {/* Add a black background behind the image */}
       <TouchableOpacity style={styles.imageBackground} onPress={handleRefreshMap}>
-        <Image
-          source={swapImage}
-          style={styles.swapImage}
-        />
+        <Text style={styles.refreshText}>Refresh</Text>
       </TouchableOpacity>
     </View>
   );
@@ -236,6 +229,11 @@ const styles = StyleSheet.create({
     width: 50,  // Set size of the image
     height: 50, // Set size of the image
   },
+  refreshText: {
+    color: "white", // Text color
+    fontSize: 18, // Font size for the "Refresh" text
+  },
+
   imageBackground: {
     position: "absolute",
     top: 50, // Adjust the distance from top
