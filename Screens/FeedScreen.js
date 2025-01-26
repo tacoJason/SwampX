@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FlatList, Text, View, StyleSheet, ActivityIndicator, Image, RefreshControl } from 'react-native';
-import { firebasePullData } from '../firebaseDB';
+import { firebasePullData, getAllBuildings } from '../firebaseDB';
 
 export default function App() {
   const [data, setData] = useState([]);
@@ -9,6 +9,7 @@ export default function App() {
   const [page, setPage] = useState(1);
   const [endReached, setEndReached] = useState(false);
   const itemsPerPage = 5;
+  const [buildingNames, setBuildingNames] = useState([]);
 
   // Load feed
   const fetchMoreData = () => {
@@ -68,6 +69,17 @@ export default function App() {
     fetchMoreData(); // Load initial data
   }, []);
 
+  //loads the building names and relates them to the initial data loaded
+  useEffect(() => {
+    const fetchBuildingNames = async() =>{
+      const locations = data.map(item =>({latitude : item.latitude, longitude: item.longitude}));
+      const buildings = await getAllBuildings(locations);
+      setBuildingNames(buildings);
+    };
+
+    fetchBuildingNames();
+  }, [data]);
+
   const renderFooter = () => {
     if (isLoading) {
       return <ActivityIndicator size="large" color="#0000ff" style={styles.loading} />;
@@ -82,10 +94,11 @@ export default function App() {
     <View style={styles.container}>
       <FlatList
         data={data}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <View style={styles.item}>
             <Image source={{ uri: item.imageLink }} style={styles.image} />
-            <Text>{item.location}</Text>
+            <Text></Text>
+            <Text>{buildingNames[index]}</Text>
           </View>
         )}
         keyExtractor={(item) => item.id}
