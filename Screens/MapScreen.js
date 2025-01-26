@@ -146,7 +146,6 @@ const MapScreen = () => {
                 latitude: currentLocation.latitude,
                 longitude: currentLocation.longitude,
               }}
-              onPress={() => handleMarkerPress({ imageLink: "https://i.imgur.com/lJJZVRv.jpeg" })}
             >
               <View style={styles.blueCircle}></View>
             </Marker>
@@ -178,7 +177,6 @@ const MapScreen = () => {
       {/* Conditionally render text and image when the marker is clicked */}
       {markerClicked && selectedLocation && (
         <View style={styles.textContainer}>
-          <Text style={styles.text}>You clicked the marker!</Text>
           <Image
             source={{ uri: selectedLocation.imageLink }}  // Use the imageLink of the selected location
             style={styles.image}
@@ -210,7 +208,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     position: "absolute",
-    bottom: 30,
+    bottom: 150,
     backgroundColor: "rgba(0, 0, 0, 0.7)",
     padding: 10,
     borderRadius: 5,
