@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, StatusBar } from 'react-native';
-import { firebasePushData, firebasePullData, iterateData, getLocations} from '../firebaseDB';
+import { firebasePushData, firebasePullData, iterateData, getLocations, getAllBuildings} from '../firebaseDB';
+import APIKeys from "../APIKeys.js"; // API Keys
 
 
 function HomeScreen() {
@@ -30,9 +31,8 @@ function HomeScreen() {
   const handleButtonClick4 = async() => {
     const array = await firebasePullData();
     const locations = getLocations(array);
-    console.log(locations);
-    
-  };
+    console.log(locations); 
+  }
 
   return (
     <View style={styles.container}>
