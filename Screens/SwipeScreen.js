@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import Swiper from 'react-native-deck-swiper';
-import { firebasePullData } from '../firebaseDB';
+import { firebasePullData, getAllBuildings } from '../firebaseDB';
 
 const SwipeScreen = () => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [buildingNames, setBuildingNames] = useState([]);
 
   useEffect(() => {
     firebasePullData().then((entries) => {
@@ -23,7 +24,20 @@ const SwipeScreen = () => {
     });
   }, []);
 
-  if (isLoading) {
+  useEffect(() => {
+      const fetchBuildingNames = async() =>{
+        if (data.length>1){
+        const locations = data.map(item =>({latitude : item.latitude, longitude: item.longitude}));
+        const buildings = await getAllBuildings(locations);
+        setBuildingNames(buildings);
+        }
+      };
+      if (data.length>0){
+        fetchBuildingNames();
+      }
+    }, [data]);
+
+  if (isLoading || buildingNames.length !== data.length) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
@@ -35,7 +49,7 @@ const SwipeScreen = () => {
     <View style={styles.container}>
       <Swiper
         cards={data}
-        renderCard={(card) => (
+        renderCard={(card, index) => (
           card.isFinalCard ? (
             <View style={styles.finalCard}>
               <Text style={styles.finalCardText}>{card.text}</Text>
@@ -43,6 +57,7 @@ const SwipeScreen = () => {
           ) : (
             <View style={styles.card}>
               <Image source={{ uri: card.imageLink }} style={styles.image} />
+              <Text>{buildingNames[index]}</Text>
             </View>
           )
         )}

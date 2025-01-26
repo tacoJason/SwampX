@@ -94,6 +94,10 @@ export const getLocations = (imageList) =>{
 }
 
 export const getBuilding = async(latitude, longitude)=>{
+  // Check if latitude and longitude are valid numbers
+  if (typeof latitude === 'number' && typeof longitude === 'number') {
+    // Check if latitude and longitude are within valid ranges
+    if (latitude >= -90 && latitude <= 90 && longitude >= -180 && longitude <= 180){
   const reverseGeocodingUrl = `https://api.geoapify.com/v1/geocode/reverse?lat=${latitude}&lon=${longitude}&apiKey=${APIKeys.geoCodeApiID}`;
   console.log("reverse geocoding", reverseGeocodingUrl);
 
@@ -114,8 +118,14 @@ if (featureCollection.features.length === 0) {
 //parses through the address and returns just the building name
 const foundAddress = featureCollection.features[0].properties.formatted;
 console.log("Address Found:", foundAddress.split(',')[0]);
-return foundAddress.split(',')[0]
+return foundAddress.split(',')[0];
+} else {
+  console.log("invalid latitude or longitude range.");
 }
+  } else{
+    console.log("invalid latitude or longitude range.");
+  }
+};
 
 
 export const getAllBuildings = async (locationList)=>{
