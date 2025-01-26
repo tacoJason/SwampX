@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Text, Dimensions, Image } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
+import getLocations from "../firebaseDB.js";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -64,7 +65,9 @@ const MapScreen = () => {
               }}
               title="Your Location"
               onPress={() => handleMarkerPress({ title: "Your Location", imageLink: "https://i.imgur.com/lJJZVRv.jpeg" })}
-            />
+            >
+              <View style={styles.blueCircle}></View>
+            </Marker>
           )}
 
           {/* Loop through the locations array and add markers */}
@@ -125,6 +128,15 @@ const styles = StyleSheet.create({
   image: {
     height: 450,
     width: "100%",
+  },
+  // Custom blue circle for the user's location
+  blueCircle: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "#006ee6",  // Blue color for the circle
+    borderWidth: 2,
+    borderColor: "white",  // Optional: white border for visibility
   },
 });
 
