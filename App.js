@@ -6,6 +6,7 @@ import HomeScreen from './Screens/HomeScreen.js';
 import CameraScreen from './Screens/CameraScreen.js';
 import MapScreen from './Screens/MapScreen.js';
 import FeedScreen from './Screens/FeedScreen.js';
+import SwipeScreen from './Screens/SwipeScreen.js';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,6 +18,7 @@ export default function App() {
           <Tab.Screen name="Map" component={MapScreen} />
           <Tab.Screen name="Camera" component={CameraScreen} />
           <Tab.Screen name="Feed" component={FeedScreen} />
+          <Tab.Screen name="Swipe" component={SwipeScreen} />
         </Tab.Navigator>
       </NavigationContainer>
     );
