@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FlatList, Text, View, StyleSheet, ActivityIndicator, Image, RefreshControl } from 'react-native';
-import { firebasePullData, getAllBuildings } from '../firebaseDB';
+import { firebasePullData, getAllBuildings, addLike, getLikes} from '../firebaseDB';
 
 export default function App() {
   const [data, setData] = useState([]);
@@ -10,6 +10,7 @@ export default function App() {
   const [endReached, setEndReached] = useState(false);
   const itemsPerPage = 5;
   const [buildingNames, setBuildingNames] = useState([]);
+  const [likeCounts, setLikeCounts] = useState([]);
 
   // Load feed
   const fetchMoreData = () => {
@@ -80,6 +81,17 @@ export default function App() {
     fetchBuildingNames();
   }, [data]);
 
+  useEffect(() => {
+      const fetchLikeCounts = ()=>{
+        if (data.length>0){
+          const likes = getLikes(data);
+          setLikeCounts(likes);
+        }
+      };
+      
+        fetchLikeCounts();
+    }, [data]);
+
   const renderFooter = () => {
     if (isLoading) {
       return <ActivityIndicator size="large" color="#0000ff" style={styles.loading} />;
@@ -89,16 +101,60 @@ export default function App() {
     }
     return null;
   };
-
   return (
     <View style={styles.container}>
       <FlatList
         data={data}
         renderItem={({ item, index }) => (
           <View style={styles.item}>
+            {/* Image */}
             <Image source={{ uri: item.imageLink }} style={styles.image} />
-            <Text></Text>
-            <Text>{buildingNames[index]}</Text>
+  
+            {/* Bottom-left text */}
+            <View
+              style={{
+                position: 'absolute',
+                bottom: 10,
+                left: 10,
+                backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+                borderRadius: 8,
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+              }}
+            >
+              <Text
+                style={{
+                  color: '#fff',
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                }}
+              >
+                {buildingNames[index]} {/* Show building name */}
+              </Text>
+            </View>
+  
+            {/* Bottom-right text */}
+            <View
+              style={{
+                position: 'absolute',
+                bottom: 10,
+                right: 10,
+                backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+                borderRadius: 8,
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+              }}
+            >
+              <Text
+                style={{
+                  color: '#fff',
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                }}
+              >
+                ❤️ {likeCounts[index]} {/* Show like count */}
+              </Text>
+            </View>
           </View>
         )}
         keyExtractor={(item) => item.id}
@@ -106,14 +162,12 @@ export default function App() {
         onEndReached={fetchMoreData}
         onEndReachedThreshold={0.5}
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={refreshData}
-          />
+          <RefreshControl refreshing={refreshing} onRefresh={refreshData} />
         }
       />
     </View>
   );
+  
 }
 
 const styles = StyleSheet.create({
