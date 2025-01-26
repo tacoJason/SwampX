@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, StatusBar, Button, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, Button, TouchableOpacity, Image } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions, Camera} from 'expo-camera';
 import { useState, useRef, useEffect } from 'react';
 import { useIsFocused } from '@react-navigation/native';
@@ -20,7 +20,7 @@ function CameraScreen() {
   const [location, setLocation] = useState(null);
   const [locationPermission, setLocationPermission] = useState(null);
 
-
+  
   async function useLocationPermissions(){
     let { status } = await Location.requestForegroundPermissionsAsync();
     setLocationPermission(status);
@@ -49,6 +49,7 @@ function CameraScreen() {
       <View style={styles.container}>
         <Text style={styles.message}>We need your permissions to show the camera</Text>
         <Button onPress={requestPermission} title="Grant Camera Permission" />
+        <Button onPress={useLocationPermissions} title="Grant Location Permission" />
       </View>
     );
   }
@@ -56,7 +57,7 @@ function CameraScreen() {
   function toggleCameraFacing() {
     setFacing(current => (current === 'back' ? 'front' : 'back'));
   }
-
+  //takes picture and reformats to readable data
   async function takePicture() {
     console.log("Took Picture");
     if (cameraRef.current) {
@@ -72,6 +73,7 @@ function CameraScreen() {
         uploadImage(formData);
     }
   }
+  //sends post
   async function uploadImage(formData) {
     try {
       const response = await axios.post(
@@ -122,12 +124,13 @@ function CameraScreen() {
     <View style={styles.container}>
       <CameraView style={styles.camera} facing={facing} ref = {cameraRef} >
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-            <Text style={styles.text}>Flip Camera</Text>
+          <TouchableOpacity style={styles.button1} onPress={toggleCameraFacing}>
+            <Image source={require('../assets/swap2.png')} style={styles.swapImage} />
+            
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button} onPress={takePicture}>
-            <Text style={styles.text}>Take Picture</Text>
+          <TouchableOpacity style={styles.button2} onPress={takePicture}>
+          <Text style={styles.text}>Take Picture</Text>
           </TouchableOpacity>
         </View>
       </CameraView>
@@ -154,14 +157,27 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
     backgroundColor: 'transparent',
-    margin: 64,
+    margin: 0,
   },
-  button: {
+  button1: {
     flex: 1,
     alignSelf: 'flex-end',
     alignItems: 'center',
+    margin: 25,
+  },
+  button2: {
+    flex: 1,
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    margin: 50,
+  },
+  swapImage: {
+    width: 50, // Adjust to desired width
+    height: 50, // Adjust to desired height
+    resizeMode: 'contain', // Ensures the image retains its aspect ratio
   },
   text: {
     fontSize: 24,
