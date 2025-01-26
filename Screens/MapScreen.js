@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Text, Dimensions, Image } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
-import getLocations from "../firebaseDB.js";
+import { getLocations, firebasePullData } from "../firebaseDB.js";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -12,12 +12,17 @@ const MapScreen = () => {
   const [initialRegion, setInitialRegion] = useState(null);
   const [markerClicked, setMarkerClicked] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [locations, setLocations] = useState([]);
 
-  const locations = [
-    { latitude: 29.648095, longitude: -82.3435861, imageLink: 'https://i.imgur.com/rFBiyeR.jpeg' },
-    { latitude: 29.648008346557617, longitude: -82.35013580322266, imageLink: 'https://i.imgur.com/tL80jRS.jpeg'},
-    { latitude: 29.649403, longitude: -82.3455544, imageLink: 'https://i.imgur.com/mvDat9q.jpeg'},
-  ];
+  useEffect(() => {
+    const fetchLocations = async () => {
+      const imageList = await firebasePullData(); 
+      const locations = getLocations(imageList); 
+      setLocations(locations);
+    };
+
+    fetchLocations();
+  }, []);
 
   useEffect(() => {
     const getLocation = async () => {
@@ -41,10 +46,20 @@ const MapScreen = () => {
     getLocation();
   }, []);
 
-  // Update this to store the full location object
+  useEffect(() => {
+    if (currentLocation) {
+      setInitialRegion({
+        latitude: currentLocation.latitude,
+        longitude: currentLocation.longitude,
+        latitudeDelta: 0.005,
+        longitudeDelta: 0.005,
+      });
+    }
+  }, [currentLocation]);
+
   const handleMarkerPress = (location) => {
     setMarkerClicked(true);
-    setSelectedLocation(location);  // Set the full location object (including imageLink)
+    setSelectedLocation(location); 
   };
 
   const handleMapPress = () => {
@@ -70,7 +85,6 @@ const MapScreen = () => {
             </Marker>
           )}
 
-          {/* Loop through the locations array and add markers */}
           {locations.map((loc, index) => (
             <Marker
               key={index}
@@ -79,19 +93,18 @@ const MapScreen = () => {
                 longitude: loc.longitude,
               }}
               title={loc.title}
-              onPress={() => handleMarkerPress(loc)}  // Pass the whole location object
+              onPress={() => handleMarkerPress(loc)} 
             />
           ))}
         </MapView>
       )}
 
-      {/* Conditionally render text and image when the marker is clicked */}
       {markerClicked && selectedLocation && (
         <View style={styles.textContainer}>
           <Text style={styles.text}>{`You clicked: ${selectedLocation.title}`}</Text>
           <Text style={styles.text}>You clicked the marker!</Text>
           <Image
-            source={{ uri: selectedLocation.imageLink }}  // Use the imageLink of the selected location
+            source={{ uri: selectedLocation.imageLink || 'default-image-url' }}
             style={styles.image}
             resizeMode="contain"
           />
@@ -129,14 +142,13 @@ const styles = StyleSheet.create({
     height: 450,
     width: "100%",
   },
-  // Custom blue circle for the user's location
   blueCircle: {
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: "#006ee6",  // Blue color for the circle
+    backgroundColor: "#006ee6",
     borderWidth: 2,
-    borderColor: "white",  // Optional: white border for visibility
+    borderColor: "white",
   },
 });
 
